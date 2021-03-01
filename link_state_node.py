@@ -17,20 +17,16 @@ class Link_State_Node(Node):
         #geeksforgeeks.org/generate-graph-using-dictionary/python/
         # KEYS = self.ID (keys are the nodes of the graph)
         # Value = list of neighbors
-        self.seq = {self.id : 0}
-        self.graph = {}
-        self.graph[self.id] = {"seq": self.seq}
-        self.remember = {"traffic":[]}
-        self.seq = {self.id : }
-        self.node = id
 
+        #https://www.programiz.com/python-programming/nested-dictionary
+        self.data_store = {self.id: {"seq": 0, "state": 0}}
 
         #need Src, Dst, Cost, SEq#
 
     # Return a string
     # Whenever DUMP_NODE, it calls the str(node) to print whatever is implemented in __str__() method
     def __str__(self):
-        return "Rewrite this function to define your node dump printout"
+        return json.dumps({'Node': self.id, 'Sequence Number:':self.data_store[self.id]['seq'], 'Link-state': self.data_store[self.id]["state"]})
 
     # Fill in this function
     # Latency is the COST
@@ -39,7 +35,14 @@ class Link_State_Node(Node):
         if latency == -1 and neighbor in self.neighbors: # This is from generic_node.py
             self.neighbors.remove(neighbor)
         #
-        pass
+        else:
+            self.neighbors.append(neighbor)
+        self.data_store[self.id]['link-cost'] = latency
+        if neighbor not in self.data_store[self.id]['seq']:
+            self.data_store[self.id][neighbor] = 0
+        else:
+            self.data_store[self.id][neighbor] += 1
+
 
     # Fill in this function
     def process_incoming_routing_message(self, m):
